@@ -1,13 +1,13 @@
 #pragma once
 #include <Windows.h>
 
-// Class wrapper for handle the windows processes shit
+// Class wrapper para manipular los procesos de windows
 class AppProcess
 {
 private:
-	const wchar_t* m_ProcessName;												// Our app name
-	int m_ProcessID;															// Our app's process ID
-	HANDLE m_Process;															// Our app process
+	const wchar_t* m_ProcessName;												// Nombre de nuestro programa
+	int m_ProcessID;															// ID del proceso de nuestro programa
+	HANDLE m_Process;															// Proceso de nuestro programa
 private:
 	int IGetProcessID();
 public:

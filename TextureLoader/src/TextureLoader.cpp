@@ -5,15 +5,17 @@
 #include <shellapi.h>
 #include <filesystem>
 
+// Variables utiles para la compatibilidad entre c++ y gms2
 #define GM_EXPORT extern "C" __declspec(dllexport)
 #define GM_TRUE (1.0)
 #define GM_FALSE (0.0)
 
 namespace filesystem = std::filesystem;
 
-static bool tl_initialized = false;
-static AppProcess GameProcess(L"SMM_WE.exe");
+static bool tl_initialized = false;												// Sirve para comprobar si GMS2 cargo correctamente el DLL
+static AppProcess GameProcess(L"SMM_WE.exe");									// Nuestro juego en una variable, para poder hacer el puente entre GMS2 y SMMWE
 
+// Conseguir las variables de entorno (ej. "%appdata%")
 char* GetEnv(const char* pPath)
 {
 	char* env;
@@ -23,6 +25,7 @@ char* GetEnv(const char* pPath)
 	return env;
 }
 
+// Inicializar el DLL por parte de GMS2
 GM_EXPORT double dllinit()
 {
 	if (!tl_initialized)
@@ -30,6 +33,7 @@ GM_EXPORT double dllinit()
 	return GM_TRUE;
 }
 
+// Exit, basicamente
 GM_EXPORT double dllexit()
 {
 	if (tl_initialized)
@@ -37,23 +41,22 @@ GM_EXPORT double dllexit()
 	return GM_FALSE;
 }
 
+// Registrar las funciones necesarias para los DsMaps
 GM_EXPORT double RegisterCallbacks(char* arg1, char* arg2, char* arg3, char* arg4)
 {
 	DsMap::RegCallbacks(arg1, arg2, arg3, arg4);
 	return GM_TRUE;
 }
 
+// Inicializar TL y cargar los procesos de SMM:WE
 GM_EXPORT double tl_init()
 {
 	if (!tl_initialized) return GM_FALSE;
 
 	GameProcess.AttachProcess();
-	if (!GameProcess.isValid())
-	{
-		return GM_FALSE;
-	}
+	if (GameProcess.isValid()) return GM_TRUE;
 
-	return GM_TRUE;
+	return GM_FALSE;
 }
 
 GM_EXPORT double tl_update()
@@ -62,10 +65,10 @@ GM_EXPORT double tl_update()
 	return GM_TRUE;
 }
 
+// Inyectar la libreria libSMMWE en SMM:WE
 GM_EXPORT double tl_injectdll()
 {
 	if (!tl_initialized) return GM_FALSE;
-	DsMap Log;
 
 	if (GameProcess.isValid())
 	{
@@ -74,23 +77,15 @@ GM_EXPORT double tl_injectdll()
 			if (!GameProcess.hasModule("libSMMWE.dll"))
 			{
 				GameProcess.InjectDLL("libSMMWE.dll");
-				Log.AddString("event_type", "DllInjected").AddString("details", "Dll injected correctly").Send();
 				return GM_TRUE;
 			}
-			Log.AddString("event_type", "DllExists").AddString("details", "Dll already injected in the current process").Send();
-			return GM_FALSE;
 		}
-		Log.AddString("event_type", "ProcessClosed").AddString("details", "The actual process is closed").Send();
-		return GM_FALSE;
 	}
-	Log.AddString("event_type", "InvalidProcess")
-		.AddString("details", "Handle have tried to attach but the process isn't running or something went wrong")
-		.AddString("solution", "Re-Attach the process")
-		.Send();
 
 	return GM_FALSE;
 }
 
+// Comprobar si SMM:WE esta ejecutado
 GM_EXPORT double tl_is_process_running()
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -100,6 +95,7 @@ GM_EXPORT double tl_is_process_running()
 
 }
 
+// Comprobar si SMM:WE esta ejecutando el proceso para modificar los Sprites
 GM_EXPORT double tl_has_module()
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -115,6 +111,7 @@ GM_EXPORT double tl_has_module()
 	return GM_FALSE;
 }
 
+// Abrir la carpeta de texturas
 GM_EXPORT double tl_open_folder()
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -127,16 +124,18 @@ GM_EXPORT double tl_open_folder()
 	return GM_TRUE;
 }
 
+// Abrir una url...
 GM_EXPORT double tl_open_url()
 {
 	if (!tl_initialized) return GM_FALSE;
 
-	// Open my youtube channel! :D
+	// Mi canal de youtube pero hardcoded >:D
 	ShellExecute(0, 0, L"https://www.youtube.com/channel/UCNQ-5fc7v3FQNMHfrbKXWlQ", 0, 0, SW_SHOW);
 
 	return GM_TRUE;
 }
 
+// Crear los directorios necesarios para TL
 GM_EXPORT double tl_create_directories()
 {
 	if (!tl_initialized) return GM_FALSE;

@@ -1,6 +1,6 @@
 #pragma once
 
-// Class wrapper for DsMaps
+// Class wrapper para los DsMaps
 class DsMap
 {
 private:

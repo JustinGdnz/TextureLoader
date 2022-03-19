@@ -4,12 +4,15 @@
 #include "AppProcess/AppProcess.h"
 #include <shellapi.h>
 #include <filesystem>
+#include "libzippp/libzippp.h"
+#include <fstream>
 
 // Variables utiles para la compatibilidad entre c++ y gms2
 #define GM_EXPORT extern "C" __declspec(dllexport)
 #define GM_TRUE (1.0)
 #define GM_FALSE (0.0)
 
+using namespace libzippp;
 namespace filesystem = std::filesystem;
 
 static bool tl_initialized = false;												// Sirve para comprobar si GMS2 cargo correctamente el DLL
@@ -154,6 +157,24 @@ GM_EXPORT double tl_create_directories()
 	filesystem::create_directories(TexturesPath);
 	filesystem::create_directory(SpritesPath);
 	filesystem::create_directory(BGPath);
+
+	return GM_TRUE;
+}
+
+GM_EXPORT double tl_zip_unzip_singlefile(char* zip_file, char* fname, char* output)
+{
+	if (!tl_initialized) return GM_FALSE;
+
+	ZipArchive zip(zip_file);
+	zip.open(ZipArchive::ReadOnly);
+
+	ZipEntry single = zip.getEntry(fname);
+	std::ofstream out(output, std::ios::binary);
+
+	out.write((char*)single.readAsBinary(), single.getSize());
+
+	out.close();
+	zip.close();
 
 	return GM_TRUE;
 }

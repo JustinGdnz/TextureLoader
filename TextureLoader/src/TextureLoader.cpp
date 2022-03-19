@@ -111,6 +111,13 @@ GM_EXPORT double tl_has_module()
 	return GM_FALSE;
 }
 
+// Devuelve la ruta de la variable de entorno
+GM_EXPORT char* tl_get_environment_path(char* env)
+{
+	if (!tl_initialized) return (char*)"";
+	return GetEnv(env);
+}
+
 // Abrir la carpeta de texturas
 GM_EXPORT double tl_open_folder()
 {

@@ -118,26 +118,26 @@ GM_EXPORT char* tl_get_environment_path(char* env)
 	return GetEnv(env);
 }
 
-// Abrir la carpeta de texturas
-GM_EXPORT double tl_open_folder()
+// Abrir una carpeta en el explorador de archivos
+GM_EXPORT double tl_open_folder(char* path)
 {
 	if (!tl_initialized) return GM_FALSE;
 
-	filesystem::path LocalAppData = GetEnv("LOCALAPPDATA");
-	filesystem::path oPath = LocalAppData / "SMM_WE\\Textures";
-
+	filesystem::path oPath = path;
 	ShellExecute(NULL, L"open", oPath.wstring().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 
 	return GM_TRUE;
 }
 
-// Abrir una url...
-GM_EXPORT double tl_open_url()
+// Abrir una url en el explorador web
+GM_EXPORT double tl_open_url(char* url)
 {
 	if (!tl_initialized) return GM_FALSE;
 
+	filesystem::path Path = url;
+
 	// Mi canal de youtube pero hardcoded >:D
-	ShellExecute(0, 0, L"https://www.youtube.com/channel/UCNQ-5fc7v3FQNMHfrbKXWlQ", 0, 0, SW_SHOW);
+	ShellExecute(0, 0, Path.wstring().c_str(), 0, 0, SW_SHOW);
 
 	return GM_TRUE;
 }

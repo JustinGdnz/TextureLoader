@@ -6,6 +6,7 @@
 #include <filesystem>
 #include "libzippp/libzippp.h"
 #include <fstream>
+#include <vector>
 
 // Variables utiles para la compatibilidad entre c++ y gms2
 #define GM_EXPORT extern "C" __declspec(dllexport)
@@ -17,6 +18,7 @@ namespace filesystem = std::filesystem;
 
 static bool tl_initialized = false;												// Sirve para comprobar si GMS2 cargo correctamente el DLL
 static AppProcess GameProcess(L"SMM_WE.exe");									// Nuestro juego en una variable, para poder hacer el puente entre GMS2 y SMMWE
+static ZipArchive* ZipFile = nullptr;
 
 // Conseguir las variables de entorno (ej. "%appdata%")
 char* GetEnv(const char* pPath)
@@ -157,6 +159,39 @@ GM_EXPORT double tl_create_directories()
 	filesystem::create_directories(TexturesPath);
 	filesystem::create_directory(SpritesPath);
 	filesystem::create_directory(BGPath);
+
+	return GM_TRUE;
+}
+
+GM_EXPORT double tl_zip_open_read(char* zip_file)
+{
+	if (!tl_initialized) return GM_FALSE;
+	if (ZipFile != nullptr) return GM_FALSE;
+
+	ZipFile = new ZipArchive(zip_file);
+	ZipFile->open(ZipArchive::ReadOnly);
+
+	return GM_TRUE;
+}
+
+GM_EXPORT double tl_zip_unzip_file(char* fname, char* output)
+{
+	if (!tl_initialized) return GM_FALSE;
+	if (ZipFile == nullptr) return GM_FALSE;
+
+	ZipEntry file = ZipFile->getEntry(fname);
+	std::ofstream out(output, std::ios::binary);
+
+	out.write((char*)file.readAsBinary(), file.getSize());
+}
+
+GM_EXPORT double tl_zip_close_read()
+{
+	if (!tl_initialized) return GM_FALSE;
+	if (ZipFile == nullptr) return GM_FALSE;
+
+	ZipFile->close();
+	delete[] ZipFile;
 
 	return GM_TRUE;
 }

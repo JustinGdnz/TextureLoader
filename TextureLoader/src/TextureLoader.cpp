@@ -196,6 +196,7 @@ GM_EXPORT double tl_zip_close_read()
 
 	ZipFile->close();
 	delete[] ZipFile;
+	ZipFile = nullptr;
 
 	return GM_TRUE;
 }

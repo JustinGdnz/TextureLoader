@@ -183,6 +183,10 @@ GM_EXPORT double tl_zip_unzip_file(char* fname, char* output)
 	std::ofstream out(output, std::ios::binary);
 
 	out.write((char*)file.readAsBinary(), file.getSize());
+
+	out.close();
+
+	return GM_TRUE;
 }
 
 GM_EXPORT double tl_zip_close_read()

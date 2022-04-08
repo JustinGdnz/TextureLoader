@@ -180,6 +180,9 @@ GM_EXPORT double tl_zip_unzip_file(char* fname, char* output)
 	if (ZipFile == nullptr) return GM_FALSE;
 
 	ZipEntry file = ZipFile->getEntry(fname);
+
+	if (file.isNull()) return GM_FALSE;
+
 	std::ofstream out(output, std::ios::binary);
 
 	out.write((char*)file.readAsBinary(), file.getSize());
@@ -209,6 +212,9 @@ GM_EXPORT double tl_zip_unzip_singlefile(char* zip_file, char* fname, char* outp
 	zip.open(ZipArchive::ReadOnly);
 
 	ZipEntry single = zip.getEntry(fname);
+
+	if (single.isNull()) return GM_FALSE;
+
 	std::ofstream out(output, std::ios::binary);
 
 	out.write((char*)single.readAsBinary(), single.getSize());

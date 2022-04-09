@@ -192,6 +192,14 @@ GM_EXPORT double tl_zip_unzip_file(char* fname, char* output)
 	return GM_TRUE;
 }
 
+GM_EXPORT double tl_zip_has_file(char* fname)
+{
+	if (!tl_initialized) return GM_FALSE;
+	if (ZipFile == nullptr) return GM_FALSE;
+
+	return ZipFile->hasEntry(fname) ? GM_TRUE : GM_FALSE;
+}
+
 GM_EXPORT double tl_zip_close_read()
 {
 	if (!tl_initialized) return GM_FALSE;

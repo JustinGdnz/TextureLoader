@@ -1,24 +1,28 @@
-#include <iostream>
-#include <Windows.h>
 #include "DsMap/DsMap.h"
 #include "AppProcess/AppProcess.h"
+// STD library
+#include <iostream>
+#include <Windows.h>
 #include <shellapi.h>
 #include <filesystem>
-#include "libzippp/libzippp.h"
 #include <fstream>
 #include <vector>
+// Third-party
+#include "libzippp/libzippp.h"
 
-// Variables utiles para la compatibilidad entre c++ y gms2
-#define GM_EXPORT extern "C" __declspec(dllexport)
-#define GM_TRUE (1.0)
-#define GM_FALSE (0.0)
+// Macros
+#define GM_EXPORT extern "C" __declspec(dllexport)		// Export to dll
+#define GM_TRUE (1.0)									// GML true equivalent
+#define GM_FALSE (0.0)									// GML false equivalent
 
+// Namespaces
 using namespace libzippp;
 namespace filesystem = std::filesystem;
 
-static bool tl_initialized = false;												// Sirve para comprobar si GMS2 cargo correctamente el DLL
-static AppProcess GameProcess(L"SMM_WE.exe");									// Nuestro juego en una variable, para poder hacer el puente entre GMS2 y SMMWE
-static ZipArchive* ZipFile = nullptr;
+// Statics
+static bool tl_initialized = false;						// Checks whenever GMS load the library
+static AppProcess GameProcess(L"SMM_WE.exe");			// SMM_WE proccess
+static ZipArchive* ZipFile = nullptr;					// I/O with zip files
 
 // Conseguir las variables de entorno (ej. "%appdata%")
 char* GetEnv(const char* pPath)
@@ -59,19 +63,21 @@ GM_EXPORT double tl_init()
 	if (!tl_initialized) return GM_FALSE;
 
 	GameProcess.AttachProcess();
-	if (GameProcess.isValid()) return GM_TRUE;
+	if (GameProcess.isValid())return GM_TRUE;
 
 	return GM_FALSE;
 }
 
+/* UNUSED
 GM_EXPORT double tl_update()
 {
 	if (!tl_initialized) return GM_FALSE;
 	return GM_TRUE;
 }
+*/
 
-// Inyectar la libreria libSMMWE en SMM:WE
-GM_EXPORT double tl_injectdll()
+// Inyectar librerias en el proceso
+GM_EXPORT double tl_injectdll(char* dllname)
 {
 	if (!tl_initialized) return GM_FALSE;
 
@@ -79,9 +85,9 @@ GM_EXPORT double tl_injectdll()
 	{
 		if (GameProcess.isRunning())
 		{
-			if (!GameProcess.hasModule("libSMMWE.dll"))
+			if (!GameProcess.hasModule(dllname))
 			{
-				GameProcess.InjectDLL("libSMMWE.dll");
+				GameProcess.InjectDLL(dllname);
 				return GM_TRUE;
 			}
 		}
@@ -90,7 +96,7 @@ GM_EXPORT double tl_injectdll()
 	return GM_FALSE;
 }
 
-// Comprobar si SMM:WE esta ejecutado
+// Comprobar si el proceso se esta ejecutado
 GM_EXPORT double tl_is_process_running()
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -100,8 +106,8 @@ GM_EXPORT double tl_is_process_running()
 
 }
 
-// Comprobar si SMM:WE esta ejecutando el proceso para modificar los Sprites
-GM_EXPORT double tl_has_module()
+// Comprobar si el proceso esta usando alguna libreria
+GM_EXPORT double tl_has_module(char* dllname)
 {
 	if (!tl_initialized) return GM_FALSE;
 
@@ -109,7 +115,7 @@ GM_EXPORT double tl_has_module()
 	{
 		if (GameProcess.isRunning())
 		{
-			return GameProcess.hasModule("libSMMWE.dll");
+			return GameProcess.hasModule(dllname);
 		}
 	}
 
@@ -140,13 +146,12 @@ GM_EXPORT double tl_open_url(char* url)
 	if (!tl_initialized) return GM_FALSE;
 
 	filesystem::path Path = url;
-
-	// Mi canal de youtube pero hardcoded >:D
 	ShellExecute(0, 0, Path.wstring().c_str(), 0, 0, SW_SHOW);
 
 	return GM_TRUE;
 }
 
+/* UNUSED
 // Crear los directorios necesarios para TL
 GM_EXPORT double tl_create_directories()
 {
@@ -162,7 +167,9 @@ GM_EXPORT double tl_create_directories()
 
 	return GM_TRUE;
 }
+*/
 
+// Open zip file as read only
 GM_EXPORT double tl_zip_open_read(char* zip_file)
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -174,24 +181,23 @@ GM_EXPORT double tl_zip_open_read(char* zip_file)
 	return GM_TRUE;
 }
 
+// Unzip file from an opened zip
 GM_EXPORT double tl_zip_unzip_file(char* fname, char* output)
 {
 	if (!tl_initialized) return GM_FALSE;
 	if (ZipFile == nullptr) return GM_FALSE;
 
 	ZipEntry file = ZipFile->getEntry(fname);
-
 	if (file.isNull()) return GM_FALSE;
 
 	std::ofstream out(output, std::ios::binary);
-
 	out.write((char*)file.readAsBinary(), file.getSize());
-
 	out.close();
 
 	return GM_TRUE;
 }
 
+// Checks if a file exist in the opened zip
 GM_EXPORT double tl_zip_has_file(char* fname)
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -200,6 +206,7 @@ GM_EXPORT double tl_zip_has_file(char* fname)
 	return ZipFile->hasEntry(fname) ? GM_TRUE : GM_FALSE;
 }
 
+// Close opened zip
 GM_EXPORT double tl_zip_close_read()
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -212,6 +219,7 @@ GM_EXPORT double tl_zip_close_read()
 	return GM_TRUE;
 }
 
+/*UNUSED
 GM_EXPORT double tl_zip_unzip_singlefile(char* zip_file, char* fname, char* output)
 {
 	if (!tl_initialized) return GM_FALSE;
@@ -232,3 +240,4 @@ GM_EXPORT double tl_zip_unzip_singlefile(char* zip_file, char* fname, char* outp
 
 	return GM_TRUE;
 }
+*/

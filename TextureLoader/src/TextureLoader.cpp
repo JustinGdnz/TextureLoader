@@ -1,14 +1,7 @@
+#include "stdafx.h"
+
 #include "DsMap/DsMap.h"
 #include "AppProcess/AppProcess.h"
-// STD library
-#include <iostream>
-#include <Windows.h>
-#include <shellapi.h>
-#include <filesystem>
-#include <fstream>
-#include <vector>
-// Third-party
-#include "libzippp/libzippp.h"
 
 // Macros
 #define GM_EXPORT extern "C" __declspec(dllexport)		// Export to dll

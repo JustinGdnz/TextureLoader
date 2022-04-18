@@ -27,12 +27,18 @@
     <ClCompile Include="src\AppProcess\AppProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DsMap\DsMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AppProcess\AppProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

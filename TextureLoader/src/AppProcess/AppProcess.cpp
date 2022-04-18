@@ -1,7 +1,5 @@
+#include "stdafx.h"
 #include "AppProcess.h"
-#include <TlHelp32.h>
-#include <Psapi.h>
-#include <filesystem>
 
 int AppProcess::IGetProcessID()
 {

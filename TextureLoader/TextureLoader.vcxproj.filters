@@ -18,13 +18,13 @@
     <ClCompile Include="src\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextureLoader.cpp">
+    <ClCompile Include="src\TextureLoader\TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DsMap\DsMap.cpp">
+    <ClCompile Include="src\TextureLoader\DsMap\DsMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AppProcess\AppProcess.cpp">
+    <ClCompile Include="src\TextureLoader\AppProcess\AppProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\stdafx.cpp">
@@ -32,10 +32,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\DsMap\DsMap.h">
+    <ClInclude Include="src\TextureLoader\DsMap\DsMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AppProcess\AppProcess.h">
+    <ClInclude Include="src\TextureLoader\AppProcess\AppProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\stdafx.h">

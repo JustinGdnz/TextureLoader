@@ -92,10 +92,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\AppProcess\AppProcess.cpp" />
+    <ClCompile Include="src\TextureLoader\AppProcess\AppProcess.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
-    <ClCompile Include="src\DsMap\DsMap.cpp" />
-    <ClCompile Include="src\TextureLoader.cpp" />
+    <ClCompile Include="src\TextureLoader\DsMap\DsMap.cpp" />
+    <ClCompile Include="src\TextureLoader\TextureLoader.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -106,8 +106,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AppProcess\AppProcess.h" />
-    <ClInclude Include="src\DsMap\DsMap.h" />
+    <ClInclude Include="src\TextureLoader\AppProcess\AppProcess.h" />
+    <ClInclude Include="src\TextureLoader\DsMap\DsMap.h" />
     <ClInclude Include="src\stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

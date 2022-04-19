@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "AppProcess.h"
 #include <TlHelp32.h>
 #include <Psapi.h>
